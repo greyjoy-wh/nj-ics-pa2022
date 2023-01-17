@@ -33,7 +33,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(nemu) ");
+  line_read = readline("(nemu) ");  //猜测是 先输出nemu字符串然后再读入字符串。
 
   if (line_read && *line_read) {
     add_history(line_read);
@@ -52,22 +52,33 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+// static int cmd_s(char *args) {
+//   int times;
+//   const int ret = sscanf(args,"%d",&times);
+//   cpu_exec(times);
+// }
+
 static int cmd_help(char *args);
 
 static struct {
   const char *name;
   const char *description;
-  int (*handler) (char *);
+  int (*handler) (char *);//函数指针
 } cmd_table [] = {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
+  //{ "si","Continue the execution for a certain time(s)",cmd_s}
 
   /* TODO: Add more commands */
 
 };
 
-#define NR_CMD ARRLEN(cmd_table)
+#define NR_CMD ARRLEN(cmd_table) //长度是 3
+
+
+
+
 
 static int cmd_help(char *args) {
   /* extract the first argument */
@@ -103,18 +114,21 @@ void sdb_mainloop() {
   }
 
   for (char *str; (str = rl_gets()) != NULL; ) {
-    char *str_end = str + strlen(str);
-
+    char *str_end = str + strlen(str);//str 是指针 +一个整数后就是移动指针
+                                      //strlen 长度是不包括最后一个空字符
+                                      //sizeof 是包括的最后一个字符
+                                      //str_end是最后一个字符的后面一个类似end() 迭代器。
+                              
     /* extract the first token as the command */
-    char *cmd = strtok(str, " ");
-    if (cmd == NULL) { continue; }
+    char *cmd = strtok(str, " ");  //从 “ ” 中拆分单词
+    if (cmd == NULL) { continue; } //如果拆分出来是NULL那么继续读取
 
     /* treat the remaining string as the arguments,
      * which may need further parsing
      */
     char *args = cmd + strlen(cmd) + 1;
     if (args >= str_end) {
-      args = NULL;
+      args = NULL;         //看指令后面有没有参数
     }
 
 #ifdef CONFIG_DEVICE
@@ -123,9 +137,9 @@ void sdb_mainloop() {
 #endif
 
     int i;
-    for (i = 0; i < NR_CMD; i ++) {
+    for (i = 0; i < NR_CMD; i ++) { //循环判断输入的cmd 指令是哪一个，然后根据不同的函数指针来运行函数。 
       if (strcmp(cmd, cmd_table[i].name) == 0) {
-        if (cmd_table[i].handler(args) < 0) { return; }
+        if (cmd_table[i].handler(args) < 0) { return; }  
         break;
       }
     }

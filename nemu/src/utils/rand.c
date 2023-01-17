@@ -19,5 +19,5 @@
 #endif
 
 void init_rand() {
-  srand(MUXDEF(CONFIG_TARGET_AM, 0, time(0)));
+  srand(MUXDEF(CONFIG_TARGET_AM, 0, time(0)));//根据配置 ... AM 的值 来选择随机数种子的参数是0 还是time(0)
 }

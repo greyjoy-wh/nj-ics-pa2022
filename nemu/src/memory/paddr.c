@@ -43,7 +43,7 @@ static void out_of_bound(paddr_t addr) {
 
 void init_mem() {
 #if   defined(CONFIG_PMEM_MALLOC)
-  pmem = malloc(CONFIG_MSIZE);
+  pmem = malloc(CONFIG_MSIZE);//p内存的大小
   assert(pmem);
 #endif
 #ifdef CONFIG_MEM_RANDOM

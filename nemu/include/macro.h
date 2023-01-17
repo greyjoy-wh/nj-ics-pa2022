@@ -19,19 +19,19 @@
 #include <string.h>
 
 // macro stringizing
-#define str_temp(x) #x
+#define str_temp(x) #x //宏定义 #x 表示将x 变成字符串
 #define str(x) str_temp(x)
 
 // strlen() for string constant
-#define STRLEN(CONST_STR) (sizeof(CONST_STR) - 1)
+#define STRLEN(CONST_STR) (sizeof(CONST_STR) - 1) //字符串的长度有（c语言的字符数组）-1
 
 // calculate the length of an array
-#define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0]))
+#define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0]))//计算数组的长度
 
-// macro concatenation
-#define concat_temp(x, y) x ## y
-#define concat(x, y) concat_temp(x, y)
-#define concat3(x, y, z) concat(concat(x, y), z)
+// macro concatenation 宏串联
+#define concat_temp(x, y) x ## y // x ## y 就是表示变量 xy
+#define concat(x, y) concat_temp(x, y)//=> xy
+#define concat3(x, y, z) concat(concat(x, y), z)//=>xyz
 #define concat4(x, y, z, w) concat3(concat(x, y), z, w)
 #define concat5(x, y, z, v, w) concat4(concat(x, y), z, v, w)
 
@@ -41,7 +41,7 @@
 #define MUX_WITH_COMMA(contain_comma, a, b) CHOOSE2nd(contain_comma a, b)
 #define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)
 // define placeholders for some property
-#define __P_DEF_0  X,
+#define __P_DEF_0  X, //这个地方要修改的
 #define __P_DEF_1  X,
 #define __P_ONE_1  X,
 #define __P_ZERO_0 X,
