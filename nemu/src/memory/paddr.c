@@ -24,7 +24,7 @@ static uint8_t *pmem = NULL;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
 
-uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }//将内存数组的指针偏移paddr - config_mbase处。传入的一个32位的地址 4*8
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t pmem_read(paddr_t addr, int len) {

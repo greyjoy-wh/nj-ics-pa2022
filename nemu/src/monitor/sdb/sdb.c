@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include "memory/vaddr.h"
 
 static int is_batch_mode = false;
 
@@ -49,14 +50,49 @@ static int cmd_c(char *args) {
 
 
 static int cmd_q(char *args) {
+  nemu_state.state = NEMU_END;
   return -1;
 }
 
-// static int cmd_s(char *args) {
-//   int times;
-//   const int ret = sscanf(args,"%d",&times);
-//   cpu_exec(times);
-// }
+static int cmd_s(char *args) {
+  if(args == NULL){
+    cpu_exec(1); 
+  } else {
+    int times;
+    sscanf(args,"%d",&times);
+    cpu_exec(times);
+  }
+  return 0;
+}
+
+static int cmd_info(char *args) {
+  if(args[0] == 'r'){
+    isa_reg_display();
+  }  
+  
+  return 0;
+}
+//声明该函数
+
+
+
+static int cmd_pm(char *args) {
+  char *num_c = strtok(args, " ");
+  char *paddr_c = strtok(NULL," ");
+  paddr_c += 2;//右移动两个。
+  int num_m;
+  paddr_t paddr_m;
+  sscanf(num_c,"%d", &num_m);
+  sscanf(paddr_c,"%x",&paddr_m);
+  for(int i = 0; i < num_m; i++){
+    word_t val = vaddr_read(paddr_m, 4);
+    printf("0x%x\t\t0x%8x\n", paddr_m, val);
+    paddr_m += 4;
+  }
+
+  return 0;
+}
+
 
 static int cmd_help(char *args);
 
@@ -68,16 +104,14 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-  //{ "si","Continue the execution for a certain time(s)",cmd_s}
-
+  { "si","Continue the execution for a certain time(s)", cmd_s},
+  { "info", "print something", cmd_info},
+  { "x","print val of vaddr", cmd_pm},
   /* TODO: Add more commands */
 
 };
 
 #define NR_CMD ARRLEN(cmd_table) //长度是 3
-
-
-
 
 
 static int cmd_help(char *args) {
